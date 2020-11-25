@@ -38,8 +38,8 @@ class News: Codable {
         var name: String
     }
     
-  var country: String
-  var category: String
+  var country = ""
+  var category = ""
    private var result: Result
     
     
@@ -52,7 +52,7 @@ class News: Codable {
     func getData(completed: @escaping () -> ()){
        
         // Create URL
-        let urlString = "http://newsapi.org/v2/top-headlines?country=\(self.country)&category=\(self.category)&apiKey=9d22dc6191124789b5721d6f482ec503"
+        let urlString = "http://newsapi.org/v2/top-headlines?country=\(self.country)&category=\(self.category)&apiKey=\(apiKey)"
         guard let url = URL(string: urlString) else {
             print("ERROR: incorrect URL \(urlString)")
             return
@@ -69,6 +69,7 @@ class News: Codable {
             do {
                  let result = try JSONDecoder().decode(Result.self, from: data!)
                 self.result = result
+                print("\(result)")
                 
             } catch {
                 print("ERROR: \(error.localizedDescription)")
