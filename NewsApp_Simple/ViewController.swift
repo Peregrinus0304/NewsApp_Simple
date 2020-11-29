@@ -18,23 +18,25 @@ class ViewController: UIViewController {
     
     
     var news: News!
-    var picker: UIPickerView!
-    var country = ["US", "Poland", "Ukraine"]
-    var category = ["Economy", "Sport", "Military"]
-    var selectedCategory = ""
-    var selectedCountry = ""
+    var zeroRectTextField = UITextField()
+    var picker = UIPickerView()
+    var toolbar = UIToolbar()
+    var country = ["ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za"]
+    var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
+    var selectedCategory = "business"
+    var selectedCountry = "us"
     
     override func viewDidLoad() {
         super.viewDidLoad()
          // create UIPickerView
-               let picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
-               super.view.addSubview(picker)
+               picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
+               view.addSubview(picker)
                
                
                
                
                // create UIToolbar
-               let toolbar = UIToolbar(frame: CGRect(x: 0, y: picker.frame.origin.y-40, width: self.view.frame.size.width, height: 40))
+               toolbar = UIToolbar(frame: CGRect(x: 0, y: picker.frame.origin.y-40, width: self.view.frame.size.width, height: 40))
                toolbar.barStyle = .black
                toolbar.tintColor = .red
                view.addSubview(toolbar)
@@ -44,6 +46,13 @@ class ViewController: UIViewController {
                
                toolbar.setItems([doneButtonItem, cancelButtonItem], animated: true)
     
+        
+        zeroRectTextField = UITextField(frame: CGRect.zero)
+        zeroRectTextField.inputView = picker
+        view.addSubview(zeroRectTextField)
+       picker.isHidden = true
+       toolbar.isHidden = true
+        
         newsCollectionView.delegate = self
         newsCollectionView.dataSource = self
         picker.delegate = self
@@ -53,6 +62,9 @@ class ViewController: UIViewController {
     
     
     @IBAction func chooseParams(_ sender: UIBarButtonItem) {
+      picker.isHidden = false
+      toolbar.isHidden = false
+        picker.becomeFirstResponder()
     }
     
     
@@ -62,11 +74,17 @@ class ViewController: UIViewController {
     }
     
     @objc func donePressed(sender: UIBarButtonItem) {
-       print(selectedCountry)
+        print(selectedCountry)
         print(selectedCategory)
+        picker.resignFirstResponder()
+        picker.isHidden = true
+        toolbar.isHidden = true
     }
     
     @objc func cancelPressed(sender: UIBarButtonItem) {
+        picker.isHidden = true
+        toolbar.isHidden = true
+        picker.resignFirstResponder()
     }
     
     
@@ -79,7 +97,7 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
