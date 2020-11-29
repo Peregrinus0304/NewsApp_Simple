@@ -16,13 +16,13 @@ class News: Codable {
     
     //MARK: - Struct
     
-    private struct Result: Codable {
+     struct Result: Codable {
         var status: String
         var totalResults: Int
         var articles: [Articles]
     }
     
-    private struct Articles: Codable {
+     struct Articles: Codable {
         var source: Source
         var author: String?
         var title: String
@@ -33,14 +33,14 @@ class News: Codable {
         var content: String
     }
     
-    private struct Source: Codable {
+     struct Source: Codable {
         var id: String?
         var name: String
     }
     
   var country = ""
   var category = ""
-   private var result: Result
+ var result: Result
     
     
     //MARK: - Reference

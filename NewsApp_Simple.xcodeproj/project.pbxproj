@@ -14,6 +14,7 @@
 		4502D95B256C622F00935EA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4502D95A256C622F00935EA5 /* Assets.xcassets */; };
 		4502D95E256C622F00935EA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4502D95C256C622F00935EA5 /* LaunchScreen.storyboard */; };
 		4502D966256D7C6000935EA5 /* NewsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4502D965256D7C6000935EA5 /* NewsModel.swift */; };
+		4588A1CC2570595B0036486D /* NewsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4588A1CB2570595B0036486D /* NewsCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		4502D95D256C622F00935EA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4502D95F256C622F00935EA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4502D965256D7C6000935EA5 /* NewsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsModel.swift; sourceTree = "<group>"; };
+		4588A1CB2570595B0036486D /* NewsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 		4502D950256C622600935EA5 /* NewsApp_Simple */ = {
 			isa = PBXGroup;
 			children = (
+				4588A1CB2570595B0036486D /* NewsCollectionViewCell.swift */,
 				4502D951256C622600935EA5 /* AppDelegate.swift */,
 				4502D953256C622600935EA5 /* SceneDelegate.swift */,
 				4502D955256C622600935EA5 /* ViewController.swift */,
@@ -145,6 +148,7 @@
 				4502D956256C622600935EA5 /* ViewController.swift in Sources */,
 				4502D952256C622600935EA5 /* AppDelegate.swift in Sources */,
 				4502D954256C622600935EA5 /* SceneDelegate.swift in Sources */,
+				4588A1CC2570595B0036486D /* NewsCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

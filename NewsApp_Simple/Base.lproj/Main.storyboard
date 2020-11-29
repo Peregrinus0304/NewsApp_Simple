@@ -23,7 +23,13 @@
                                     <constraint firstAttribute="height" constant="44" id="53a-pk-p6Q"/>
                                 </constraints>
                                 <items>
-                                    <navigationItem title="Title" id="AeB-xW-izL"/>
+                                    <navigationItem title="Title" id="AeB-xW-izL">
+                                        <barButtonItem key="rightBarButtonItem" title="Item" id="edy-AL-ZUd">
+                                            <connections>
+                                                <action selector="chooseParams:" destination="BYZ-38-t0r" id="El0-nz-t0Z"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
                                 </items>
                             </navigationBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i7q-Kt-av3">
@@ -36,9 +42,9 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="LBo-j4-aLc">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="NewsCell" id="LBo-j4-aLc" customClass="NewsCollectionViewCell" customModule="NewsApp_Simple" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="414" height="242"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Qyy-he-d3D">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="242"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -53,6 +59,9 @@
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="NfD-dX-lmx">
                                                     <rect key="frame" x="186" y="35" width="220" height="170"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="220" id="qne-nz-ree"/>
+                                                    </constraints>
                                                     <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                     <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -99,6 +108,13 @@
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="414" height="242"/>
+                                        <connections>
+                                            <outlet property="newsAuthorLabel" destination="QZo-Z2-VrC" id="RYJ-o1-8oh"/>
+                                            <outlet property="newsDescriptionTextView" destination="NfD-dX-lmx" id="YCS-g1-ifs"/>
+                                            <outlet property="newsImageView" destination="x8k-sp-o8a" id="R52-I0-y10"/>
+                                            <outlet property="newsPublishedAtLabel" destination="ebe-Rg-ZXk" id="NX4-ez-a2F"/>
+                                            <outlet property="newsTitleLabel" destination="2Be-ci-1Ue" id="bdB-91-5vM"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="zH7-9N-EM6">
@@ -119,6 +135,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="newsCollectionView" destination="i7q-Kt-av3" id="sD9-Y4-1Mx"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
