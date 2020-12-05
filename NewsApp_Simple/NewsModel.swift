@@ -10,37 +10,33 @@ import Foundation
 
 class News: Codable {
 
-  
-    
-    
-    
     //MARK: - Struct
     
      struct Result: Codable {
-        var status: String
-        var totalResults: Int
+        var status: String?
+        var totalResults: Int?
         var articles: [Articles]
     }
     
      struct Articles: Codable {
         var source: Source
         var author: String?
-        var title: String
-        var description: String
-        var url: String
-        var urlToImage: String
+        var title: String?
+        var description: String?
+        var url: String?
+        var urlToImage: String?
         var publishedAt: String
-        var content: String
+        var content: String?
     }
     
      struct Source: Codable {
         var id: String?
-        var name: String
+        var name: String?
     }
     
-  var country = ""
-  var category = ""
- var result: Result
+  var country = "us"
+  var category = "general"
+    var result: News.Result?
     
     
     //MARK: - Reference

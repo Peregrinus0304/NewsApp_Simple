@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var newsCollectionView: UICollectionView!
     
     
-    var news: News!
+    var news = News()
     var zeroRectTextField = UITextField()
     var picker = UIPickerView()
     var toolbar = UIToolbar()
@@ -28,12 +28,18 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         // create UIPickerView
+       
+        news.getData{
+            DispatchQueue.main.async {
+                self.newsCollectionView.reloadData()
+            }
+        }
+        
+        
+        
+        // create UIPickerView
                picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
                view.addSubview(picker)
-               
-               
-               
                
                // create UIToolbar
                toolbar = UIToolbar(frame: CGRect(x: 0, y: picker.frame.origin.y-40, width: self.view.frame.size.width, height: 40))
@@ -85,6 +91,7 @@ class ViewController: UIViewController {
         picker.isHidden = true
         toolbar.isHidden = true
         picker.resignFirstResponder()
+        self.newsCollectionView.reloadData()
     }
     
     
@@ -97,11 +104,16 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        
+        return news.result?.articles.count ?? 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
+      
+        //let articles = news.result!.articles[indexPath.row]
+        
+        //cell.newsAuthorLabel.text = articles.author
         
         return cell
     }
