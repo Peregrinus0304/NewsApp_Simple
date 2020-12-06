@@ -37,7 +37,7 @@ class ViewController: UIViewController {
             }
         }
         
-        
+        navigationBar.topItem!.title = "\(news.country) - \(news.category)"
         
         // create UIPickerView
                picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
@@ -60,6 +60,8 @@ class ViewController: UIViewController {
         zeroRectTextField = UITextField(frame: CGRect.zero)
         zeroRectTextField.inputView = picker
         view.addSubview(zeroRectTextField)
+        
+     
        picker.isHidden = true
        toolbar.isHidden = true
         
@@ -128,11 +130,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
-      
+        cell.layer.cornerRadius = 25
         let articles = news.result?.articles[indexPath.row]
         
         cell.newsTitleLabel.text = articles?.title
-        cell.newsAuthorLabel.text = articles?.author 
+        cell.newsAuthorLabel.text = articles?.author
         cell.newsDescriptionTextView.text = articles?.description
         cell.newsPublishedAtLabel.text = articles?.publishedAt
         
