@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var newsCollectionView: UICollectionView!
     
+    @IBOutlet weak var navigationBar: UINavigationBar!
     
     var news = News()
     var zeroRectTextField = UITextField()
@@ -40,6 +41,8 @@ class ViewController: UIViewController {
         
         // create UIPickerView
                picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
+        picker.backgroundColor = .blue
+        picker.tintColor = .white
                view.addSubview(picker)
                
                // create UIToolbar
@@ -90,8 +93,13 @@ class ViewController: UIViewController {
     }
     
     @objc func donePressed(sender: UIBarButtonItem) {
-        print(selectedCountry)
-        print(selectedCategory)
+        
+       news.getData{
+            DispatchQueue.main.async {
+                self.newsCollectionView.reloadData()
+            }
+        }
+        navigationBar.topItem!.title = "\(news.country) - \(news.category)"
         picker.resignFirstResponder()
         picker.isHidden = true
         toolbar.isHidden = true
@@ -101,7 +109,7 @@ class ViewController: UIViewController {
         picker.isHidden = true
         toolbar.isHidden = true
         picker.resignFirstResponder()
-        self.newsCollectionView.reloadData()
+
     }
     
     
@@ -124,7 +132,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         let articles = news.result?.articles[indexPath.row]
         
         cell.newsTitleLabel.text = articles?.title
-            cell.newsAuthorLabel.text = articles?.author
+        cell.newsAuthorLabel.text = articles?.author 
         cell.newsDescriptionTextView.text = articles?.description
         cell.newsPublishedAtLabel.text = articles?.publishedAt
         
@@ -181,9 +189,9 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch component {
             case 0:
-                selectedCountry = country[row]
+                news.country = country[row]
             case 1:
-            selectedCategory = category[row]
+                news.category = category[row]
             default:
             return
         }
