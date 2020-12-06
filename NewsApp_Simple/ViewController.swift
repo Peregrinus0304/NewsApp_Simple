@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class ViewController: UIViewController {
     
@@ -66,6 +67,15 @@ class ViewController: UIViewController {
     }
     
     
+    func showTutorial(_ which: String) {
+        if let url = URL(string: which) {
+            let config = SFSafariViewController.Configuration()
+            config.entersReaderIfAvailable = true
+
+            let vc = SFSafariViewController(url: url, configuration: config)
+            present(vc, animated: true)
+        }
+    }
     
     @IBAction func chooseParams(_ sender: UIBarButtonItem) {
       picker.isHidden = false
@@ -111,15 +121,30 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
       
-        //let articles = news.result!.articles[indexPath.row]
+        let articles = news.result?.articles[indexPath.row]
         
-        //cell.newsAuthorLabel.text = articles.author
+        cell.newsTitleLabel.text = articles?.title
+            cell.newsAuthorLabel.text = articles?.author
+        cell.newsDescriptionTextView.text = articles?.description
+        cell.newsPublishedAtLabel.text = articles?.publishedAt
+        
+        let articleImageURL = URL(string: articles?.urlToImage ?? "https://e3.365dm.com/20/11/768x432/skynews-brexit-breaking-news_5177180.jpg?20201123152327")!
+        if let data = try? Data(contentsOf: articleImageURL) {
+             cell.newsImageView.image = UIImage(data: data)
+        }
         
         return cell
     }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+      let articles = news.result?.articles[indexPath.row]
+       
+        let articleURL = articles?.url
+            self.showTutorial(articleURL!)
+        }
+
 }
-
-
 
 
 // MARK: - UIPickerView protocols
