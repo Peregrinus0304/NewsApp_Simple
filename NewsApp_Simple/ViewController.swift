@@ -183,7 +183,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         }
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    /*func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
         switch component {
             case 0:
@@ -194,7 +194,8 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                 return "ERROR: Can`t execute titleForRow func"
             
         }
-    }
+    }*/
+   
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch component {
             case 0:
@@ -205,4 +206,29 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                 return
         }
     }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 45.0
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: 45))
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 150, height: 45))
+       
+        switch component {
+            case 0:
+             label.text = country[row]
+            default:
+            label.text = category[row]
+        }
+       
+        label.textColor = .systemPink
+        label.font = UIFont(name: "Geeza Pro", size: 30)
+        label.textAlignment = .center
+        
+        view.addSubview(label)
+        return view
+    }
+    
 }
