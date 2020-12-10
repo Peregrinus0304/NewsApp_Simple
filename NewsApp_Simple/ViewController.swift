@@ -20,6 +20,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var navigationBar: UINavigationBar!
     
     var news = News()
+    var titleLabel = UILabel()
     var zeroRectTextField = UITextField()
     var picker = UIPickerView()
     var toolbar = UIToolbar()
@@ -41,7 +42,11 @@ class ViewController: UIViewController {
         
         // MARK: - Initialize UI elements
         
-        navigationBar.topItem!.title = "\(news.country) - \(news.category)"
+     
+        titleLabel.textColor = .systemPink
+        titleLabel.font = UIFont(name: "Geeza Pro", size: 28)
+        titleLabel.text = "\(news.country) - \(news.category)"
+        navigationBar.topItem?.titleView = titleLabel
         
         // Add Refresh Control to the CollectionView
         if #available(iOS 10.0, *) {
@@ -227,7 +232,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         }
         
         label.textColor = .systemPink
-        label.font = UIFont(name: "Geeza Pro", size: 30)
+        label.font = UIFont(name: "Geeza Pro", size: 28)
         label.textAlignment = .center
         
         view.addSubview(label)
@@ -242,7 +247,7 @@ extension ViewController {
         var result = "some time ago"
         let ISOformatter = ISO8601DateFormatter()
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
+        formatter.dateFormat = "dd MMMM"
         
         if let unwrappedString = ISOString {
             let date = ISOformatter.date(from: unwrappedString)
