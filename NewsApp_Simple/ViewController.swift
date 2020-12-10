@@ -84,9 +84,9 @@ class ViewController: UIViewController {
         picker.delegate = self
         picker.dataSource = self
     }
-   
+    
     @objc private func refreshWeatherData(_ sender: Any) {
-      news.getData{
+        news.getData{
             DispatchQueue.main.async {
                 self.newsCollectionView.reloadData()
             }
@@ -142,11 +142,14 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
         cell.layer.cornerRadius = 25
         let articles = news.result?.articles[indexPath.row]
+        let formatter = ISO8601DateFormatter()
+        
+        
         
         cell.newsTitleLabel.text = articles?.title
         cell.newsAuthorLabel.text = articles?.author
         cell.newsDescriptionTextView.text = articles?.description
-        cell.newsPublishedAtLabel.text = articles?.publishedAt
+        cell.newsPublishedAtLabel.text = getDate(articles?.publishedAt)
         
         let articleImageURL = URL(string: articles?.urlToImage ?? "https://e3.365dm.com/20/11/768x432/skynews-brexit-breaking-news_5177180.jpg?20201123152327")!
         if let data = try? Data(contentsOf: articleImageURL) {
@@ -184,18 +187,18 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     /*func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        
-        switch component {
-            case 0:
-                return country[row]
-            case 1:
-                return category[row]
-            default:
-                return "ERROR: Can`t execute titleForRow func"
-            
-        }
-    }*/
-   
+     
+     switch component {
+     case 0:
+     return country[row]
+     case 1:
+     return category[row]
+     default:
+     return "ERROR: Can`t execute titleForRow func"
+     
+     }
+     }*/
+    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch component {
             case 0:
@@ -215,14 +218,14 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: 45))
         
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 150, height: 45))
-       
+        
         switch component {
             case 0:
-             label.text = country[row]
+                label.text = country[row]
             default:
-            label.text = category[row]
+                label.text = category[row]
         }
-       
+        
         label.textColor = .systemPink
         label.font = UIFont(name: "Geeza Pro", size: 30)
         label.textAlignment = .center
@@ -232,3 +235,24 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
 }
+
+extension ViewController {
+    
+    func getDate(_ ISOString:String?)->String {
+        var result = "some time ago"
+        let ISOformatter = ISO8601DateFormatter()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        
+        if let unwrappedString = ISOString {
+            let date = ISOformatter.date(from: unwrappedString)
+            
+            let stringDate = formatter.string(from: date!)
+            result = stringDate
+        }
+        
+        return result
+    }
+}
+
+
