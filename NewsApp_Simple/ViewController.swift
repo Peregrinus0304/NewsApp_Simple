@@ -45,6 +45,7 @@ class ViewController: UIViewController {
      
         titleLabel.textColor = .systemPink
         titleLabel.font = UIFont(name: "Geeza Pro", size: 28)
+        titleLabel.textAlignment = .center
         titleLabel.text = "\(news.country) - \(news.category)"
         navigationBar.topItem?.titleView = titleLabel
         
@@ -147,9 +148,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
         cell.layer.cornerRadius = 25
         let articles = news.result?.articles[indexPath.row]
-        let formatter = ISO8601DateFormatter()
-        
-        
         
         cell.newsTitleLabel.text = articles?.title
         cell.newsAuthorLabel.text = articles?.author
@@ -190,19 +188,6 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                 return 1
         }
     }
-    
-    /*func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-     
-     switch component {
-     case 0:
-     return country[row]
-     case 1:
-     return category[row]
-     default:
-     return "ERROR: Can`t execute titleForRow func"
-     
-     }
-     }*/
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch component {
