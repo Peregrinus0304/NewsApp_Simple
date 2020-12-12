@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import SkeletonView
 
 class ViewController: UIViewController {
     
@@ -29,16 +30,21 @@ class ViewController: UIViewController {
     var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
     var selectedCategory = "business"
     var selectedCountry = "us"
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // getting data from the model
-        news.getData{
-            DispatchQueue.main.async {
-                self.newsCollectionView.reloadData()
-            }
-        }
+         // getting data from the model
+       news.getData{
+           DispatchQueue.main.async {
+            self.newsCollectionView.stopSkeletonAnimation()
+            self.newsCollectionView.hideSkeleton()
+               self.newsCollectionView.reloadData()
+           }
+       }
+       
+        
         
         // MARK: - Initialize UI elements
         
@@ -55,7 +61,7 @@ class ViewController: UIViewController {
         } else {
             newsCollectionView.addSubview(refreshControl)
         }
-        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(refreshNewsData(_:)), for: .valueChanged)
         refreshControl.tintColor = .systemPink
         refreshControl.attributedTitle = NSAttributedString(string: "Getting news...", attributes: nil)
         
@@ -91,16 +97,26 @@ class ViewController: UIViewController {
         picker.dataSource = self
     }
     
-    @objc private func refreshWeatherData(_ sender: Any) {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+       
+        // start animated loading
+            newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink), animation: nil, transition: .crossDissolve(0.35)) }
+    
+    
+    @objc private func refreshNewsData(_ sender: Any) {
+      
+       
         news.getData{
-            DispatchQueue.main.async {
-                self.newsCollectionView.reloadData()
-            }
-        }
+                  DispatchQueue.main.async {
+                      self.newsCollectionView.reloadData()
+                  }
+              }
         self.refreshControl.endRefreshing()
     }
     
     func showArticle(_ which: String) {
+     
         if let url = URL(string: which) {
             let config = SFSafariViewController.Configuration()
             config.entersReaderIfAvailable = true
@@ -117,13 +133,16 @@ class ViewController: UIViewController {
     }
     
     @objc func donePressed(sender: UIBarButtonItem) {
-        
+        // start animated loading
+        newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink), animation: nil, transition: .crossDissolve(0.35))
         news.getData{
-            DispatchQueue.main.async {
-                self.newsCollectionView.reloadData()
-            }
-        }
-        navigationBar.topItem!.title = "\(news.country) - \(news.category)"
+                  DispatchQueue.main.async {
+                   self.newsCollectionView.stopSkeletonAnimation()
+                   self.newsCollectionView.hideSkeleton()
+                      self.newsCollectionView.reloadData()
+                  }
+              }
+        titleLabel.text = "\(news.country) - \(news.category)"
         picker.resignFirstResponder()
         picker.isHidden = true
         toolbar.isHidden = true
@@ -137,7 +156,11 @@ class ViewController: UIViewController {
 } // the end of the class
 
 // MARK: - UICollectionView protocols
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSource {
+    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> ReusableCellIdentifier {
+        return "NewsCell"
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -145,6 +168,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+  
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
         cell.layer.cornerRadius = 25
         let articles = news.result?.articles[indexPath.row]
@@ -154,11 +178,13 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.newsDescriptionTextView.text = articles?.description
         cell.newsPublishedAtLabel.text = getDate(articles?.publishedAt)
         
-        let articleImageURL = URL(string: articles?.urlToImage ?? "https://e3.365dm.com/20/11/768x432/skynews-brexit-breaking-news_5177180.jpg?20201123152327")!
+        let articleImageURL = URL(string: articles?.urlToImage ?? "https://thumbs.dreamstime.com/b/transparent-grid-vector-background-transparent-grid-modern-illustration-transparent-grid-vector-background-transparent-grid-modern-129498878.jpg")!
         if let data = try? Data(contentsOf: articleImageURL) {
             cell.newsImageView.image = UIImage(data: data)
         }
+        
         return cell
+       
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
