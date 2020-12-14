@@ -20,6 +20,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var navigationBar: UINavigationBar!
     
+    
+    var shouldAnimatie = true
     var news = News()
     var titleLabel = UILabel()
     var zeroRectTextField = UITextField()
@@ -30,25 +32,32 @@ class ViewController: UIViewController {
     var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
     var selectedCategory = "business"
     var selectedCountry = "us"
-
+    
+    
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-         // getting data from the model
-       news.getData{
-           DispatchQueue.main.async {
-            self.newsCollectionView.stopSkeletonAnimation()
-            self.newsCollectionView.hideSkeleton()
-               self.newsCollectionView.reloadData()
-           }
-       }
        
+        newsCollectionView.reloadData()
+        
+        news.getData{
+            DispatchQueue.main.async {
+                self.newsCollectionView.stopSkeletonAnimation()
+                self.newsCollectionView.hideSkeleton()
+                self.newsCollectionView.reloadData()
+            }
+        }
+        
+       
+        
         
         
         // MARK: - Initialize UI elements
         
-     
+        
         titleLabel.textColor = .systemPink
         titleLabel.font = UIFont(name: "Geeza Pro", size: 28)
         titleLabel.textAlignment = .center
@@ -97,26 +106,26 @@ class ViewController: UIViewController {
         picker.dataSource = self
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-       
-        // start animated loading
-            newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink), animation: nil, transition: .crossDissolve(0.35)) }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        if shouldAnimatie {
+            self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5)) }
+        
+    }
     
     @objc private func refreshNewsData(_ sender: Any) {
-      
-       
+        
+        
         news.getData{
-                  DispatchQueue.main.async {
-                      self.newsCollectionView.reloadData()
-                  }
-              }
+            DispatchQueue.main.async {
+                self.newsCollectionView.reloadData()
+            }
+        }
         self.refreshControl.endRefreshing()
     }
     
     func showArticle(_ which: String) {
-     
+        shouldAnimatie = false
         if let url = URL(string: which) {
             let config = SFSafariViewController.Configuration()
             config.entersReaderIfAvailable = true
@@ -134,14 +143,14 @@ class ViewController: UIViewController {
     
     @objc func donePressed(sender: UIBarButtonItem) {
         // start animated loading
-        newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink), animation: nil, transition: .crossDissolve(0.35))
+         self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5)) 
         news.getData{
-                  DispatchQueue.main.async {
-                   self.newsCollectionView.stopSkeletonAnimation()
-                   self.newsCollectionView.hideSkeleton()
-                      self.newsCollectionView.reloadData()
-                  }
-              }
+            DispatchQueue.main.async {
+                self.newsCollectionView.stopSkeletonAnimation()
+                self.newsCollectionView.hideSkeleton()
+                self.newsCollectionView.reloadData()
+            }
+        }
         titleLabel.text = "\(news.country) - \(news.category)"
         picker.resignFirstResponder()
         picker.isHidden = true
@@ -168,9 +177,10 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-  
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewsCell", for: indexPath) as! NewsCollectionViewCell
         cell.layer.cornerRadius = 25
+        
         let articles = news.result?.articles[indexPath.row]
         
         cell.newsTitleLabel.text = articles?.title
@@ -178,13 +188,14 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         cell.newsDescriptionTextView.text = articles?.description
         cell.newsPublishedAtLabel.text = getDate(articles?.publishedAt)
         
-        let articleImageURL = URL(string: articles?.urlToImage ?? "https://thumbs.dreamstime.com/b/transparent-grid-vector-background-transparent-grid-modern-illustration-transparent-grid-vector-background-transparent-grid-modern-129498878.jpg")!
+        let articleImageURL = URL(string: articles?.urlToImage ?? "https://opengameart.org/sites/default/files/Transparency500.png")!
         if let data = try? Data(contentsOf: articleImageURL) {
             cell.newsImageView.image = UIImage(data: data)
         }
         
+        
         return cell
-       
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
