@@ -12,14 +12,10 @@ import SkeletonView
 
 class ViewController: UIViewController {
     
-    
-    
     //MARK: - Outlets
     
     @IBOutlet weak var newsCollectionView: UICollectionView!
-    
     @IBOutlet weak var navigationBar: UINavigationBar!
-    
     
     var shouldAnimatie = true
     var news = News()
@@ -27,22 +23,17 @@ class ViewController: UIViewController {
     var zeroRectTextField = UITextField()
     var picker = UIPickerView()
     var toolbar = UIToolbar()
-    private let refreshControl = UIRefreshControl()
+    let refreshControl = UIRefreshControl()
     var country = ["ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za"]
     var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
     var selectedCategory = "business"
     var selectedCountry = "us"
     
     
-    
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        newsCollectionView.reloadData()
         
+        // getting data from News API
         news.getData{
             DispatchQueue.main.async {
                 self.newsCollectionView.stopSkeletonAnimation()
@@ -50,52 +41,8 @@ class ViewController: UIViewController {
                 self.newsCollectionView.reloadData()
             }
         }
-        
-       
-        
-        
-        
-        // MARK: - Initialize UI elements
-        
-        
-        titleLabel.textColor = .systemPink
-        titleLabel.font = UIFont(name: "Geeza Pro", size: 28)
-        titleLabel.textAlignment = .center
-        titleLabel.text = "\(news.country) - \(news.category)"
-        navigationBar.topItem?.titleView = titleLabel
-        
-        // Add Refresh Control to the CollectionView
-        if #available(iOS 10.0, *) {
-            newsCollectionView.refreshControl = refreshControl
-        } else {
-            newsCollectionView.addSubview(refreshControl)
-        }
-        refreshControl.addTarget(self, action: #selector(refreshNewsData(_:)), for: .valueChanged)
-        refreshControl.tintColor = .systemPink
-        refreshControl.attributedTitle = NSAttributedString(string: "Getting news...", attributes: nil)
-        
-        // create UIPickerView
-        picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
-        picker.backgroundColor = UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)
-        picker.tintColor = .white
-        
-        view.addSubview(picker)
-        
-        // create UIToolbar with items
-        toolbar = UIToolbar(frame: CGRect(x: 0, y: picker.frame.origin.y-40, width: self.view.frame.size.width, height: 40))
-        toolbar.barStyle = .default
-        toolbar.tintColor = .systemPink
-        view.addSubview(toolbar)
-        
-        let doneButtonItem = UIBarButtonItem(title: "done", style: .done, target: self, action: #selector(donePressed(sender:)))
-        let cancelButtonItem = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelPressed(sender:)))
-        toolbar.setItems([doneButtonItem, cancelButtonItem], animated: true)
-        
-        
-        zeroRectTextField = UITextField(frame: CGRect.zero)
-        zeroRectTextField.inputView = picker
-        view.addSubview(zeroRectTextField)
-        
+        // initialing UI
+        createUI()
         
         picker.isHidden = true
         toolbar.isHidden = true
@@ -108,13 +55,14 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+       
+        // start loading animation
         if shouldAnimatie {
             self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5)) }
-        
     }
     
-    @objc private func refreshNewsData(_ sender: Any) {
-        
+    // refreshing the CollectionView
+    @objc func refreshNewsData(_ sender: Any) {
         
         news.getData{
             DispatchQueue.main.async {
@@ -124,6 +72,7 @@ class ViewController: UIViewController {
         self.refreshControl.endRefreshing()
     }
     
+    // go to article page using SFSafariViewController
     func showArticle(_ which: String) {
         shouldAnimatie = false
         if let url = URL(string: which) {
@@ -135,15 +84,17 @@ class ViewController: UIViewController {
         }
     }
     
+    // unhide the PickerView
     @IBAction func chooseParams(_ sender: UIBarButtonItem) {
         picker.isHidden = false
         toolbar.isHidden = false
         picker.becomeFirstResponder()
     }
     
+    // get new data with params chosen in PickerView
     @objc func donePressed(sender: UIBarButtonItem) {
         // start animated loading
-         self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5)) 
+        self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5))
         news.getData{
             DispatchQueue.main.async {
                 self.newsCollectionView.stopSkeletonAnimation()
@@ -157,22 +108,23 @@ class ViewController: UIViewController {
         toolbar.isHidden = true
     }
     
+    // hide the PickerView
     @objc func cancelPressed(sender: UIBarButtonItem) {
         picker.isHidden = true
         toolbar.isHidden = true
         picker.resignFirstResponder()
     }
-} // the end of the class
+}
+
 
 // MARK: - UICollectionView protocols
+
 extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSource {
     func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> ReusableCellIdentifier {
         return "NewsCell"
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         return news.result?.articles.count ?? 1
     }
     
@@ -192,7 +144,6 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         if let data = try? Data(contentsOf: articleImageURL) {
             cell.newsImageView.image = UIImage(data: data)
         }
-        
         
         return cell
         
@@ -263,6 +214,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
 }
 
+// format ISO8601Date string
 extension ViewController {
     
     func getDate(_ ISOString:String?)->String {
