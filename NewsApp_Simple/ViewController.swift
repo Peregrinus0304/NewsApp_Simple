@@ -24,10 +24,11 @@ class ViewController: UIViewController {
     var picker = UIPickerView()
     var toolbar = UIToolbar()
     let refreshControl = UIRefreshControl()
-    var country = ["ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za"]
+    
+    let countryDict: [String: String] = ["ae":"United Arab Emirates","ar":"Argentina", "at":"Austria", "au":"Australia", "be":"Belgium", "bg":"Bulgaria", "br":"Brazil", "ca":"Canada", "ch":"Switzerland", "cn":"Chins", "co":"Colombia", "cu":"Cuba", "cz":"Czech Republic", "de":"Germany", "eg":"Egypt", "fr":"France", "gb":"United Kingdom", "gr":"Greece", "hk":"Hong Kong", "hu":"Hungary", "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "it":"Italy", "jp":"Japan", "kr":"South Korea", "lt":"Lithuania", "lv":"Latvia", "ma":"Morocco", "mx":"Mexico", "my":"Malaysia", "ng":"Nigeria", "nl":"Netherlands", "no":"Norway", "nz":"New Zealand", "ph":"Philippines", "pl":"Poland", "pt":"Portugal", "ro":"Romania", "rs":"Serbia", "ru":"rashka", "sa":"Saudi Arabia", "se":"Sweden", "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "th":"Thailand", "tr":"Turkey", "tw":"Taiwan", "ua":"Ukraine", "us":"USA", "ve":"Venezuela", "za":"South Africa"]
+    
+    let country = ["ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za"]
     var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
-    var selectedCategory = "business"
-    var selectedCountry = "us"
     
     
     override func viewDidLoad() {
@@ -140,7 +141,7 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         cell.newsDescriptionTextView.text = articles?.description
         cell.newsPublishedAtLabel.text = getDate(articles?.publishedAt)
         
-        let articleImageURL = URL(string: articles?.urlToImage ?? "https://opengameart.org/sites/default/files/Transparency500.png")!
+        let articleImageURL = URL(string: articles?.urlToImage ?? "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.islandpacket.com%2F&psig=AOvVaw1uUxV67BUqInuSqRChYv64&ust=1608243550759000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKjP16fE0-0CFQAAAAAdAAAAABAJ")!
         if let data = try? Data(contentsOf: articleImageURL) {
             cell.newsImageView.image = UIImage(data: data)
         }
@@ -199,13 +200,13 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         
         switch component {
             case 0:
-                label.text = country[row]
+                label.text = countryDict[country[row]]
             default:
                 label.text = category[row]
         }
         
         label.textColor = .systemPink
-        label.font = UIFont(name: "Geeza Pro", size: 28)
+        label.font = UIFont(name: "AmericanTypewriter", size: 28)
         label.textAlignment = .center
         
         view.addSubview(label)

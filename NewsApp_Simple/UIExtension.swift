@@ -17,9 +17,9 @@ extension ViewController {
         
         
         titleLabel.textColor = .systemPink
-        titleLabel.font = UIFont(name: "Geeza Pro", size: 28)
+        titleLabel.font = UIFont(name: "AmericanTypewriter", size: 28)
         titleLabel.textAlignment = .center
-        titleLabel.text = "\(news.country) - \(news.category)"
+        titleLabel.text = "\(countryDict[news.country]!) - \(news.category)"
         navigationBar.topItem?.titleView = titleLabel
         
         // Add Refresh Control to the CollectionView
@@ -36,6 +36,7 @@ extension ViewController {
         picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
         picker.backgroundColor = UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)
         picker.tintColor = .white
+        
         
         view.addSubview(picker)
         

@@ -42,7 +42,7 @@ class News: Codable {
     //MARK: - Reference
     
     
-    let apiKey = "9d22dc6191124789b5721d6f482ec503"
+   private let apiKey = "9d22dc6191124789b5721d6f482ec503"
     //MARK: - Parsing
     
     func getData(completed: @escaping () -> ()){
