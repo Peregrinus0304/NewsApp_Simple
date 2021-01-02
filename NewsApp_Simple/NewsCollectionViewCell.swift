@@ -10,17 +10,14 @@ import UIKit
 
 class NewsCollectionViewCell: UICollectionViewCell {
  
+    //MARK: - IBOutlet
+    
     @IBOutlet weak var newsTitleLabel: UILabel!
     @IBOutlet weak var newsImageView: UIImageView!
     @IBOutlet weak var newsDescriptionTextView: UITextView!
     @IBOutlet weak var newsPublishedAtLabel: UILabel!
     @IBOutlet weak var newsAuthorLabel: UILabel!
     
-    //var news: News! {
-    //    didSet{
-          
-            
-    //    }
 }
     
 

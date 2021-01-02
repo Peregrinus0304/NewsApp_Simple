@@ -34,7 +34,7 @@
                                     <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
                                 </textAttributes>
                                 <items>
-                                    <navigationItem title="Title" largeTitleDisplayMode="always" id="AeB-xW-izL">
+                                    <navigationItem title="Title" id="AeB-xW-izL">
                                         <barButtonItem key="rightBarButtonItem" image="magnifyingglass" catalog="system" id="edy-AL-ZUd">
                                             <color key="tintColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <connections>
@@ -189,6 +189,10 @@
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isSkeletonable" value="YES"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="bDk-fw-V2O"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="OkL-Vf-N2c"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="0.74901960779999999" green="0.92145264149999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

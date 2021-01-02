@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var newsCollectionView: UICollectionView!
     @IBOutlet weak var navigationBar: UINavigationBar!
     
+    //MARK: - Properties
+    
     var shouldAnimatie = true
     var news = News()
     var titleLabel = UILabel()
@@ -24,12 +26,11 @@ class ViewController: UIViewController {
     var picker = UIPickerView()
     var toolbar = UIToolbar()
     let refreshControl = UIRefreshControl()
-    
     let countryDict: [String: String] = ["ae":"United Arab Emirates","ar":"Argentina", "at":"Austria", "au":"Australia", "be":"Belgium", "bg":"Bulgaria", "br":"Brazil", "ca":"Canada", "ch":"Switzerland", "cn":"Chins", "co":"Colombia", "cu":"Cuba", "cz":"Czech Republic", "de":"Germany", "eg":"Egypt", "fr":"France", "gb":"United Kingdom", "gr":"Greece", "hk":"Hong Kong", "hu":"Hungary", "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "it":"Italy", "jp":"Japan", "kr":"South Korea", "lt":"Lithuania", "lv":"Latvia", "ma":"Morocco", "mx":"Mexico", "my":"Malaysia", "ng":"Nigeria", "nl":"Netherlands", "no":"Norway", "nz":"New Zealand", "ph":"Philippines", "pl":"Poland", "pt":"Portugal", "ro":"Romania", "rs":"Serbia", "ru":"rashka", "sa":"Saudi Arabia", "se":"Sweden", "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "th":"Thailand", "tr":"Turkey", "tw":"Taiwan", "ua":"Ukraine", "us":"USA", "ve":"Venezuela", "za":"South Africa"]
-    
     let country = ["ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za"]
     var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
     
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,33 +45,70 @@ class ViewController: UIViewController {
         }
         // initialing UI
         createUI()
-        
+        picker.delegate = self
+        picker.dataSource = self
         picker.isHidden = true
         toolbar.isHidden = true
         
-        newsCollectionView.delegate = self
-        newsCollectionView.dataSource = self
-        picker.delegate = self
-        picker.dataSource = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-       
+        
         // start loading animation
         if shouldAnimatie {
             self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5)) }
+        
     }
     
-    // refreshing the CollectionView
-    @objc func refreshNewsData(_ sender: Any) {
+}
+
+//MARK: - FilePrivate extension
+
+fileprivate extension ViewController {
+    
+    func createUI() {
         
-        news.getData{
-            DispatchQueue.main.async {
-                self.newsCollectionView.reloadData()
-            }
+        // MARK: - Initialize UI elements
+        
+        titleLabel.textColor = .systemPink
+        titleLabel.font = UIFont(name: "AmericanTypewriter", size: 40)
+        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.textAlignment = .center
+        titleLabel.text = "\(countryDict[news.country]!) - \(news.category)"
+        titleLabel.minimumScaleFactor = 10/UIFont.labelFontSize
+        titleLabel.adjustsFontSizeToFitWidth = true
+       navigationBar.topItem?.titleView = titleLabel
+        
+        // Add Refresh Control to the CollectionView
+        if #available(iOS 10.0, *) {
+            newsCollectionView.refreshControl = refreshControl
+        } else {
+            newsCollectionView.addSubview(refreshControl)
         }
-        self.refreshControl.endRefreshing()
+        refreshControl.addTarget(self, action: #selector(refreshNewsData(_:)), for: .valueChanged)
+        refreshControl.tintColor = .systemPink
+        refreshControl.attributedTitle = NSAttributedString(string: "Getting news...", attributes: nil)
+        
+        // create UIPickerView
+        picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
+        picker.backgroundColor = UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)
+        picker.tintColor = .white
+      
+        view.addSubview(picker)
+        
+        // create UIToolbar with items
+        toolbar = UIToolbar(frame: CGRect(x: 0, y: picker.frame.origin.y-40, width: self.view.frame.size.width, height: 40))
+        toolbar.barStyle = .default
+        toolbar.tintColor = .systemPink
+        view.addSubview(toolbar)
+        
+        let doneButtonItem = UIBarButtonItem(title: "done", style: .done, target: self, action: #selector(donePressed(sender:)))
+        let cancelButtonItem = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelPressed(sender:)))
+        toolbar.setItems([doneButtonItem, cancelButtonItem], animated: true)
+        zeroRectTextField = UITextField(frame: CGRect.zero)
+        zeroRectTextField.inputView = picker
+        view.addSubview(zeroRectTextField)
     }
     
     // go to article page using SFSafariViewController
@@ -85,11 +123,14 @@ class ViewController: UIViewController {
         }
     }
     
-    // unhide the PickerView
-    @IBAction func chooseParams(_ sender: UIBarButtonItem) {
-        picker.isHidden = false
-        toolbar.isHidden = false
-        picker.becomeFirstResponder()
+    // refreshing the CollectionView
+    @objc func refreshNewsData(_ sender: Any) {
+        news.getData{
+            DispatchQueue.main.async {
+                self.newsCollectionView.reloadData()
+            }
+        }
+        self.refreshControl.endRefreshing()
     }
     
     // get new data with params chosen in PickerView
@@ -103,7 +144,7 @@ class ViewController: UIViewController {
                 self.newsCollectionView.reloadData()
             }
         }
-        titleLabel.text = "\(news.country) - \(news.category)"
+        titleLabel.text = "\(countryDict[news.country] ?? "" ) - \(news.category)"
         picker.resignFirstResponder()
         picker.isHidden = true
         toolbar.isHidden = true
@@ -115,10 +156,17 @@ class ViewController: UIViewController {
         toolbar.isHidden = true
         picker.resignFirstResponder()
     }
+    
+    // unhide the PickerView
+    @IBAction func chooseParams(_ sender: UIBarButtonItem) {
+        picker.isHidden = false
+        toolbar.isHidden = false
+        picker.becomeFirstResponder()
+    }
+    
 }
 
-
-// MARK: - UICollectionView protocols
+// MARK: - Extension UICollectionViewDelegate
 
 extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSource {
     func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> ReusableCellIdentifier {
@@ -147,7 +195,6 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         }
         
         return cell
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -156,10 +203,12 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         let articleURL = articles?.url
         self.showArticle(articleURL!)
     }
+    
 }
 
 
 // MARK: - UIPickerView protocols
+
 extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -208,14 +257,16 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         label.textColor = .systemPink
         label.font = UIFont(name: "AmericanTypewriter", size: 28)
         label.textAlignment = .center
-        
+        label.minimumScaleFactor = 10/UIFont.labelFontSize
+        label.adjustsFontSizeToFitWidth = true
         view.addSubview(label)
         return view
     }
     
 }
 
-// format ISO8601Date string
+//MARK: - Extension format date
+
 extension ViewController {
     
     func getDate(_ ISOString:String?)->String {
@@ -233,6 +284,5 @@ extension ViewController {
         
         return result
     }
+    
 }
-
-
