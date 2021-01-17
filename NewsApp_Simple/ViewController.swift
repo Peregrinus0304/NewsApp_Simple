@@ -87,7 +87,9 @@ fileprivate extension ViewController {
         titleLabel.text = "\(countryDict[news.country]!) - \(news.category)"
         titleLabel.minimumScaleFactor = 10/UIFont.labelFontSize
         titleLabel.adjustsFontSizeToFitWidth = true
-       navigationBar.topItem?.titleView = titleLabel
+        navigationBar.topItem?.titleView = titleLabel
+        
+        toolbar.isHidden = false
         
         // Add Refresh Control to the CollectionView
         if #available(iOS 10.0, *) {
@@ -112,7 +114,7 @@ fileprivate extension ViewController {
         if let url = URL(string: which) {
             let config = SFSafariViewController.Configuration()
             config.entersReaderIfAvailable = true
-            
+            toolbar.isHidden = true
             let vc = SFSafariViewController(url: url, configuration: config)
             present(vc, animated: true)
         }
@@ -185,7 +187,7 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         if let data = try? Data(contentsOf: articleImageURL) {
             cell.newsImageView.image = UIImage(data: data)
         } else {
-//            cell.newsImageView.image = UIImage(data: data)
+            //            cell.newsImageView.image = UIImage(data: data)
         }
         
         return cell
