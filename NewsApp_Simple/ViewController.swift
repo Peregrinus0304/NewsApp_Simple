@@ -16,6 +16,21 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var newsCollectionView: UICollectionView!
     @IBOutlet weak var navigationBar: UINavigationBar!
+    @IBOutlet weak var picker: UIPickerView!
+    @IBOutlet weak var toolbar: UIToolbar!
+    
+    var canBecome = false
+    override var canBecomeFirstResponder: Bool {
+        return canBecome
+    }
+    
+    override var inputView: UIView? {
+        return picker
+    }
+    
+    override var inputAccessoryView: UIView? {
+        return toolbar
+    }
     
     //MARK: - Properties
     
@@ -23,10 +38,8 @@ class ViewController: UIViewController {
     var news = News()
     var titleLabel = UILabel()
     var zeroRectTextField = UITextField()
-    var picker = UIPickerView()
-    var toolbar = UIToolbar()
     let refreshControl = UIRefreshControl()
-    let countryDict: [String: String] = ["ae":"United Arab Emirates","ar":"Argentina", "at":"Austria", "au":"Australia", "be":"Belgium", "bg":"Bulgaria", "br":"Brazil", "ca":"Canada", "ch":"Switzerland", "cn":"Chins", "co":"Colombia", "cu":"Cuba", "cz":"Czech Republic", "de":"Germany", "eg":"Egypt", "fr":"France", "gb":"United Kingdom", "gr":"Greece", "hk":"Hong Kong", "hu":"Hungary", "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "it":"Italy", "jp":"Japan", "kr":"South Korea", "lt":"Lithuania", "lv":"Latvia", "ma":"Morocco", "mx":"Mexico", "my":"Malaysia", "ng":"Nigeria", "nl":"Netherlands", "no":"Norway", "nz":"New Zealand", "ph":"Philippines", "pl":"Poland", "pt":"Portugal", "ro":"Romania", "rs":"Serbia", "ru":"rashka", "sa":"Saudi Arabia", "se":"Sweden", "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "th":"Thailand", "tr":"Turkey", "tw":"Taiwan", "ua":"Ukraine", "us":"USA", "ve":"Venezuela", "za":"South Africa"]
+    let countryDict: [String: String] = ["ae":"United Arab Emirates","ar":"Argentina", "at":"Austria", "au":"Australia", "be":"Belgium", "bg":"Bulgaria", "br":"Brazil", "ca":"Canada", "ch":"Switzerland", "cn":"China", "co":"Colombia", "cu":"Cuba", "cz":"Czech Republic", "de":"Germany", "eg":"Egypt", "fr":"France", "gb":"United Kingdom", "gr":"Greece", "hk":"Hong Kong", "hu":"Hungary", "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "it":"Italy", "jp":"Japan", "kr":"South Korea", "lt":"Lithuania", "lv":"Latvia", "ma":"Morocco", "mx":"Mexico", "my":"Malaysia", "ng":"Nigeria", "nl":"Netherlands", "no":"Norway", "nz":"New Zealand", "ph":"Philippines", "pl":"Poland", "pt":"Portugal", "ro":"Romania", "rs":"Serbia", "ru":"rashka", "sa":"Saudi Arabia", "se":"Sweden", "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "th":"Thailand", "tr":"Turkey", "tw":"Taiwan", "ua":"Ukraine", "us":"USA", "ve":"Venezuela", "za":"South Africa"]
     let country = ["ae", "ar", "at", "au", "be", "bg", "br", "ca", "ch", "cn", "co", "cu", "cz", "de", "eg", "fr", "gb", "gr", "hk", "hu", "id", "ie", "il", "in", "it", "jp", "kr", "lt", "lv", "ma", "mx", "my", "ng", "nl", "no", "nz", "ph", "pl", "pt", "ro", "rs", "ru", "sa", "se", "sg", "si", "sk", "th", "tr", "tw", "ua", "us", "ve", "za"]
     var category = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
     
@@ -45,11 +58,8 @@ class ViewController: UIViewController {
         }
         // initialing UI
         createUI()
-        picker.delegate = self
-        picker.dataSource = self
-        picker.isHidden = true
-        toolbar.isHidden = true
-        
+        becomeFirstResponder()
+        reloadInputViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,24 +100,10 @@ fileprivate extension ViewController {
         refreshControl.tintColor = .systemPink
         refreshControl.attributedTitle = NSAttributedString(string: "Getting news...", attributes: nil)
         
-        // create UIPickerView
-        picker = UIPickerView(frame: CGRect(x: 0, y: self.view.bounds.height - 200, width: self.view.bounds.width, height: 200))
-        picker.backgroundColor = UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)
-        picker.tintColor = .white
-      
-        view.addSubview(picker)
-        
-        // create UIToolbar with items
-        toolbar = UIToolbar(frame: CGRect(x: 0, y: picker.frame.origin.y-40, width: self.view.frame.size.width, height: 40))
-        toolbar.barStyle = .default
-        toolbar.tintColor = .systemPink
-        view.addSubview(toolbar)
-        
         let doneButtonItem = UIBarButtonItem(title: "done", style: .done, target: self, action: #selector(donePressed(sender:)))
         let cancelButtonItem = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelPressed(sender:)))
         toolbar.setItems([doneButtonItem, cancelButtonItem], animated: true)
         zeroRectTextField = UITextField(frame: CGRect.zero)
-        zeroRectTextField.inputView = picker
         view.addSubview(zeroRectTextField)
     }
     
@@ -145,23 +141,20 @@ fileprivate extension ViewController {
             }
         }
         titleLabel.text = "\(countryDict[news.country] ?? "" ) - \(news.category)"
-        picker.resignFirstResponder()
-        picker.isHidden = true
-        toolbar.isHidden = true
+        canBecome = false
+        resignFirstResponder()
     }
     
     // hide the PickerView
     @objc func cancelPressed(sender: UIBarButtonItem) {
-        picker.isHidden = true
-        toolbar.isHidden = true
-        picker.resignFirstResponder()
+        canBecome = false
+        resignFirstResponder()
     }
     
     // unhide the PickerView
     @IBAction func chooseParams(_ sender: UIBarButtonItem) {
-        picker.isHidden = false
-        toolbar.isHidden = false
-        picker.becomeFirstResponder()
+        canBecome = true
+        becomeFirstResponder()
     }
     
 }
@@ -174,7 +167,7 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return news.result?.articles.count ?? 1
+        return news.result?.articles.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -192,6 +185,8 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
         let articleImageURL = URL(string: articles?.urlToImage ?? "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.islandpacket.com%2F&psig=AOvVaw1uUxV67BUqInuSqRChYv64&ust=1608243550759000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKjP16fE0-0CFQAAAAAdAAAAABAJ")!
         if let data = try? Data(contentsOf: articleImageURL) {
             cell.newsImageView.image = UIImage(data: data)
+        } else {
+//            cell.newsImageView.image = UIImage(data: data)
         }
         
         return cell
@@ -200,8 +195,9 @@ extension ViewController: UICollectionViewDelegate, SkeletonCollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let articles = news.result?.articles[indexPath.row]
         
-        let articleURL = articles?.url
-        self.showArticle(articleURL!)
+        if let articleURL = articles?.url {
+            self.showArticle(articleURL)
+        }
     }
     
 }
