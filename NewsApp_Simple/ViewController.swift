@@ -68,7 +68,6 @@ class ViewController: UIViewController {
         // start loading animation
         if shouldAnimatie {
             self.newsCollectionView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .systemPink, secondaryColor: UIColor(displayP3Red: 191.0/255.0, green: 235.0/255.0, blue: 234.0/255.0, alpha: 1)), animation: nil, transition: .crossDissolve(0.5)) }
-        
     }
     
 }
